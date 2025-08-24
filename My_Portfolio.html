@@ -211,7 +211,6 @@
         }
 
         .profile-image {
-
             width: 300px;
             height: 300px;
             border-radius: 50%;
@@ -567,6 +566,7 @@
             gap: 10px;
             margin-top: 15px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .voice-btn {
@@ -723,7 +723,6 @@
         /* GCP Professional Cloud Architect Badge */
         .gcp-architect .badge-image {
             background: linear-gradient(135deg, #4285f4, #34a853);
-
             border-color: #4285f4;
         }
 
@@ -781,16 +780,7 @@
             color: #94a3b8;
             margin-top: 5px;
         }
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, #6366f1, #8b5cf6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin: 0 auto 15px;
-        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -832,6 +822,15 @@
 
             .projects-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .voice-controls {
+                gap: 8px;
+            }
+
+            .voice-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -926,6 +925,9 @@
                     </button>
                 </div>
                 <div class="voice-controls">
+                    <button class="voice-btn" id="readAloudBtn" onclick="toggleReadAloud()">
+                        📢 Read Aloud
+                    </button>
                     <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
                         🔊 Enable Voice Responses
                     </button>
@@ -1021,7 +1023,7 @@
             <div class="cert-badges-container">
                 <!-- Oracle Cloud Infrastructure -->
                 <div class="cert-badge-item oracle-cert">
-                    <div class="">
+                    <div class="badge-image">
                         <img src="images/badges/1072-21_Oracle_Cloud_Infrastructure_Architect.png" alt="Oracle Cloud Infrastructure" style="width: 70px; height: 70px; object-fit: contain;">
                     </div>
                     <div class="cert-name">OCI Certified Solutions Architect</div>
@@ -1031,7 +1033,7 @@
 
                 <!-- Introduction to cloud 101 -->
                 <div class="cert-badge-item aws-architect">
-                    <div class="">
+                    <div class="badge-image">
                         <img src="images/badges/image.png" alt="Introduction to Cloud 101" style="width: 70px; height: 70px; object-fit: contain;">
                     </div>
                     <div class="cert-name">Introduction to Cloud 101</div>
@@ -1041,7 +1043,7 @@
 
                 <!-- OCI Foundations Associate -->
                 <div class="cert-badge-item gcp-architect">
-                    <div class="">
+                    <div class="badge-image">
                         <img src="images/badges/50_Oracle_Cloud_Infrastructure.png"
                              alt="OCI Foundations Associate" style="width: 70px; height: 70px; object-fit: contain;">
                     </div>
@@ -1049,8 +1051,7 @@
                     <div class="cert-provider-small">Oracle</div>
                     <div class="cert-year">2025</div>
                 </div>
-
-
+            </div>
 
             <div class="cert-stats-horizontal">
                 <div class="stat-item-horizontal">
@@ -1168,6 +1169,7 @@
 
     // AI Chat Functionality
     let voiceEnabled = false;
+    let readAloudEnabled = false;
     let isTyping = false;
 
     async function sendMessage() {
@@ -1196,8 +1198,8 @@
             hideTypingIndicator();
             addMessage(data.reply, 'ai');
 
-            // Play voice if enabled
-            if (voiceEnabled) {
+            // Play voice if either voice or read aloud is enabled
+            if (voiceEnabled || readAloudEnabled) {
                 speakText(data.reply);
             }
         } catch (err) {
@@ -1234,6 +1236,19 @@
         document.getElementById('chatSendBtn').disabled = false;
     }
 
+    function toggleReadAloud() {
+        const readAloudBtn = document.getElementById('readAloudBtn');
+        readAloudEnabled = !readAloudEnabled;
+        
+        if (readAloudEnabled) {
+            readAloudBtn.innerHTML = '🔇 Read Aloud Off';
+            readAloudBtn.classList.add('active');
+        } else {
+            readAloudBtn.innerHTML = '📢 Read Aloud';
+            readAloudBtn.classList.remove('active');
+        }
+    }
+
     function toggleVoice() {
         const voiceBtn = document.getElementById('voiceBtn');
         voiceEnabled = !voiceEnabled;
@@ -1242,17 +1257,36 @@
             voiceBtn.innerHTML = '🔇 Disable Voice';
             voiceBtn.classList.add('active');
         } else {
-            voiceBtn.innerHTML = '🔊 Enable Voice';
+            voiceBtn.innerHTML = '🔊 Enable Voice Responses';
             voiceBtn.classList.remove('active');
         }
     }
 
     function speakText(text) {
         if ('speechSynthesis' in window) {
+            // Stop any ongoing speech
+            speechSynthesis.cancel();
+            
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = 0.9;
             utterance.pitch = 1;
-            speechSynthesis.speak(utterance);
+            utterance.volume = 0.8;
+            
+            // Add error handling
+            utterance.onerror = function(event) {
+                console.error('Speech synthesis error:', event);
+            };
+            
+            utterance.onend = function() {
+                console.log('Speech ended');
+            };
+            
+            // Small delay to ensure proper initialization
+            setTimeout(() => {
+                speechSynthesis.speak(utterance);
+            }, 100);
+        } else {
+            console.warn('Speech synthesis not supported in this browser');
         }
     }
 
