@@ -1219,19 +1219,23 @@
     }
 
     function addMessage(text, sender) {
-        const messagesContainer = document.getElementById('chatMessages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}`;
-        
-        const avatar = sender === 'ai' ? '🤖' : '👤';
-        messageDiv.innerHTML = `
-            <div class="message-avatar">${avatar}</div>
-            <div class="message-content">${text}</div>
-        `;
-        
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    
+    const avatar = sender === 'ai' ? '🤖' : '👤';
+    
+    // Convert markdown to HTML for AI messages
+    const processedText = sender === 'ai' ? markdownToHtml(text) : text;
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar">${avatar}</div>
+        <div class="message-content">${processedText}</div>
+    `;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
     function showTypingIndicator() {
         isTyping = true;
@@ -1415,6 +1419,38 @@
     document.querySelectorAll('.glass-card, .skill-item').forEach(el => {
         observer.observe(el);
     });
+    function markdownToHtml(text) {
+    return text
+        // Bold text: **text** or __text__
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/__(.*?)__/g, '<strong>$1</strong>')
+        
+        // Italic text: *text* or _text_
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/_(.*?)_/g, '<em>$1</em>')
+        
+        // Bullet points: - item or * item
+        .replace(/^[*-]\s+(.+)$/gm, '<li>$1</li>')
+        
+        // Numbered lists: 1. item
+        .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+        
+        // Line breaks
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        
+        // Wrap standalone <li> items in <ul>
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        
+        // Wrap content in paragraphs if it doesn't start with a tag
+        .replace(/^(?!<[ul|ol|h|p])/gm, '<p>')
+        .replace(/(?<!>)$/gm, '</p>')
+        
+        // Clean up empty paragraphs
+        .replace(/<p><\/p>/g, '')
+        .replace(/<p>(<[ul|ol])/g, '$1')
+        .replace(/(<\/[ul|ol]>)<\/p>/g, '$1');
+    }
     
 </script>
 
