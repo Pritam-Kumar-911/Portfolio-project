@@ -1,3 +1,5 @@
 .idea
 Portfolio project.iml
-Backend(Nodejs)/node_modules
+node_modules/
+Backend(Nodejs)/.env
+Backend(Nodejs)/knowledge.json
