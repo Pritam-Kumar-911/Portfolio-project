@@ -1144,164 +1144,162 @@
     </section>
 
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Navbar background on scroll
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 100) {
-                nav.style.background = 'rgba(15, 15, 35, 0.95)';
-                nav.style.borderBottom = '1px solid rgba(79, 70, 229, 0.3)';
-            } else {
-                nav.style.background = 'rgba(15, 15, 35, 0.9)';
-                nav.style.borderBottom = '1px solid rgba(79, 70, 229, 0.2)';
-            }
-        });
-
-        // AI Chat Functionality
-        let voiceEnabled = false;
-        let isTyping = false;
-
-        // Sample responses for demo (later replace with real AI API)
-        const sampleResponses = [
-            "That's a great question! I'm passionate about creating innovative web solutions that combine beautiful design with powerful functionality.",
-            "I love working with modern technologies like React, Node.js, and AI APIs. Each project teaches me something new!",
-            "My goal is to build applications that not only work well but also provide amazing user experiences. What interests you most about web development?",
-            "I'm constantly learning new technologies and staying up-to-date with industry trends. The tech world moves so fast!",
-            "Thanks for asking! I really enjoy problem-solving and turning complex ideas into simple, elegant solutions.",
-            "That's one of my favorite projects! I'm always excited to discuss the technical challenges and creative solutions involved."
-        ];
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (message === '' || isTyping) return;
-            
-            // Add user message
-            addMessage(message, 'user');
-            input.value = '';
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            // Simulate AI response (replace with real AI API call)
-            setTimeout(() => {
-                hideTypingIndicator();
-                const response = getRandomResponse();
-                addMessage(response, 'ai');
-                
-                // Play voice if enabled
-                if (voiceEnabled) {
-                    speakText(response);
-                }
-            }, 1500 + Math.random() * 2000);
-        }
-
-        function addMessage(text, sender) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const avatar = sender === 'ai' ? '🤖' : '👤';
-            messageDiv.innerHTML = `
-                <div class="message-avatar">${avatar}</div>
-                <div class="message-content">${text}</div>
-            `;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function showTypingIndicator() {
-            isTyping = true;
-            document.getElementById('typingIndicator').classList.add('show');
-            document.getElementById('chatSendBtn').disabled = true;
-        }
-
-        function hideTypingIndicator() {
-            isTyping = false;
-            document.getElementById('typingIndicator').classList.remove('show');
-            document.getElementById('chatSendBtn').disabled = false;
-        }
-
-        function getRandomResponse() {
-            return sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
-        }
-
-        function toggleVoice() {
-            const voiceBtn = document.getElementById('voiceBtn');
-            voiceEnabled = !voiceEnabled;
-            
-            if (voiceEnabled) {
-                voiceBtn.innerHTML = '🔇 Disable Voice';
-                voiceBtn.classList.add('active');
-            } else {
-                voiceBtn.innerHTML = '🔊 Enable Voice';
-                voiceBtn.classList.remove('active');
-            }
-        }
-
-        function speakText(text) {
-            // Web Speech API (basic implementation)
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.9;
-                utterance.pitch = 1;
-                speechSynthesis.speak(utterance);
-            }
-        }
-
-        function clearChat() {
-            const messagesContainer = document.getElementById('chatMessages');
-            messagesContainer.innerHTML = `
-                <div class="message ai">
-                    <div class="message-avatar">🤖</div>
-                    <div class="message-content">
-                        Hi! I'm an AI version of [Your Name]. I can tell you about my projects, skills, experience, or we can just have a casual chat. What would you like to know?
-                    </div>
-                </div>
-            `;
-        }
-
-        // Enter key to send message
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // Original code continues...
-        document.querySelector('form').addEventListener('submit', function(e) {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            alert('Thank you for your message! This is a demo form.');
-        });
-
-        // Add animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeInUp 1s ease-out';
-                }
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.glass-card, .skill-item').forEach(el => {
-            observer.observe(el);
         });
-    </script>
+    });
+
+    // Navbar background on scroll
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 100) {
+            nav.style.background = 'rgba(15, 15, 35, 0.95)';
+            nav.style.borderBottom = '1px solid rgba(79, 70, 229, 0.3)';
+        } else {
+            nav.style.background = 'rgba(15, 15, 35, 0.9)';
+            nav.style.borderBottom = '1px solid rgba(79, 70, 229, 0.2)';
+        }
+    });
+
+    // AI Chat Functionality
+    let voiceEnabled = false;
+    let isTyping = false;
+
+    async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        
+        if (message === '' || isTyping) return;
+
+        // Add user message
+        addMessage(message, 'user');
+        input.value = '';
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        try {
+            // Call backend (Gemini API via Node.js server)
+            const res = await fetch("http://localhost:3000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message }),
+            });
+
+            const data = await res.json();
+
+            hideTypingIndicator();
+            addMessage(data.reply, 'ai');
+
+            // Play voice if enabled
+            if (voiceEnabled) {
+                speakText(data.reply);
+            }
+        } catch (err) {
+            hideTypingIndicator();
+            console.error("Error:", err);
+            addMessage("❌ Sorry, I couldn't connect to the AI server.", 'ai');
+        }
+    }
+
+    function addMessage(text, sender) {
+        const messagesContainer = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+        
+        const avatar = sender === 'ai' ? '🤖' : '👤';
+        messageDiv.innerHTML = `
+            <div class="message-avatar">${avatar}</div>
+            <div class="message-content">${text}</div>
+        `;
+        
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        isTyping = true;
+        document.getElementById('typingIndicator').classList.add('show');
+        document.getElementById('chatSendBtn').disabled = true;
+    }
+
+    function hideTypingIndicator() {
+        isTyping = false;
+        document.getElementById('typingIndicator').classList.remove('show');
+        document.getElementById('chatSendBtn').disabled = false;
+    }
+
+    function toggleVoice() {
+        const voiceBtn = document.getElementById('voiceBtn');
+        voiceEnabled = !voiceEnabled;
+        
+        if (voiceEnabled) {
+            voiceBtn.innerHTML = '🔇 Disable Voice';
+            voiceBtn.classList.add('active');
+        } else {
+            voiceBtn.innerHTML = '🔊 Enable Voice';
+            voiceBtn.classList.remove('active');
+        }
+    }
+
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+    function clearChat() {
+        const messagesContainer = document.getElementById('chatMessages');
+        messagesContainer.innerHTML = `
+            <div class="message ai">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    Hi! I'm an AI version of Pritam. I can tell you about my projects, skills, experience, or we can just have a casual chat. What would you like to know?
+                </div>
+            </div>
+        `;
+    }
+
+    // Enter key to send message
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Demo form
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Thank you for your message! This is a demo form.');
+    });
+
+    // Add animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 1s ease-out';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.glass-card, .skill-item').forEach(el => {
+        observer.observe(el);
+    });
+    
+</script>
+
 </body>
 </html>
