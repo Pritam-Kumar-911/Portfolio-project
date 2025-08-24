@@ -1171,6 +1171,8 @@
     let voiceEnabled = false;
     let readAloudEnabled = false;
     let isTyping = false;
+    let recognition = null;
+    let isListening = false;
 
     async function sendMessage() {
         const input = document.getElementById('chatInput');
@@ -1201,6 +1203,13 @@
             // Play voice if either voice or read aloud is enabled
             if (voiceEnabled || readAloudEnabled) {
                 speakText(data.reply);
+            }
+
+            // Restart listening if voice input is active
+            if (voiceEnabled && !isListening) {
+                setTimeout(() => {
+                    startListening();
+                }, 2000); // Wait 2 seconds before listening again
             }
         } catch (err) {
             hideTypingIndicator();
@@ -1254,13 +1263,87 @@
         voiceEnabled = !voiceEnabled;
         
         if (voiceEnabled) {
-            voiceBtn.innerHTML = '🔇 Disable Voice';
+            voiceBtn.innerHTML = '🎤 Voice Input Active';
             voiceBtn.classList.add('active');
+            initializeSpeechRecognition();
         } else {
             voiceBtn.innerHTML = '🔊 Enable Voice Responses';
             voiceBtn.classList.remove('active');
+            if (recognition) {
+                recognition.stop();
+            }
         }
     }
+
+    function initializeSpeechRecognition() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert('Speech recognition not supported in this browser. Please try Chrome or Edge.');
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = function() {
+            isListening = true;
+            const voiceBtn = document.getElementById('voiceBtn');
+            voiceBtn.innerHTML = '🎤 Listening...';
+            voiceBtn.style.animation = 'pulse 1s infinite';
+        };
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            const chatInput = document.getElementById('chatInput');
+            chatInput.value = transcript;
+            
+            // Automatically send the message
+            sendMessage();
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            isListening = false;
+            const voiceBtn = document.getElementById('voiceBtn');
+            voiceBtn.innerHTML = '🎤 Voice Input Active';
+            voiceBtn.style.animation = '';
+        };
+
+        recognition.onend = function() {
+            isListening = false;
+            const voiceBtn = document.getElementById('voiceBtn');
+            if (voiceEnabled) {
+                voiceBtn.innerHTML = '🎤 Voice Input Active';
+                voiceBtn.style.animation = '';
+            }
+        };
+
+        // Start listening when voice is enabled
+        startListening();
+    }
+
+    function startListening() {
+        if (recognition && voiceEnabled && !isListening && !isTyping) {
+            try {
+                recognition.start();
+            } catch (error) {
+                console.error('Error starting speech recognition:', error);
+            }
+        }
+    }
+
+    // Add click event to manually trigger listening
+    document.addEventListener('DOMContentLoaded', function() {
+        const voiceBtn = document.getElementById('voiceBtn');
+        voiceBtn.addEventListener('click', function() {
+            if (voiceEnabled && !isListening) {
+                startListening();
+            }
+        });
+    });
 
     function speakText(text) {
         if ('speechSynthesis' in window) {
