@@ -268,16 +268,20 @@
         }
 
         .project-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, #6366f1, #8b5cf6);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 1.5rem;
-        }
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    margin-right: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+        .project-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
         .project-links {
             display: flex;
@@ -970,14 +974,14 @@
             <div>
                 <h3 style="font-size: 1.8rem; margin-bottom: 20px;">Hello, I'm Cloud & DevOps Enthusiast</h3>
                 <p style="margin-bottom: 20px; opacity: 0.9;">
-                    I'm passionate about building exceptional digital experiences that live at the intersection of 
-                    design and technology. With a strong foundation in modern web development and a keen eye for 
-                    design, I create solutions that are not only functional but also visually stunning.
+                    Hello, I’m an aspiring Cloud and DevOps Engineer passionate about building scalable and reliable 
+                    systems. I’m exploring cloud platforms, automation practices, and modern 
+                    infrastructure tools, aiming to bridge the gap between development and operations.
                 </p>
                 <p style="opacity: 0.9;">
-                    When I'm not coding, you'll find me exploring the latest in AI technology, contributing to 
-                    open-source projects, or experimenting with new design trends. I believe in continuous 
-                    learning and pushing the boundaries of what's possible on the web.
+                    I believe in continuous learning and see technology as a way to create solutions that make an 
+                    impact. My long-term vision is to contribute to innovative projects and eventually grow
+                    into entrepreneurship, driving innovation through cloud and automation.
                 </p>
             </div>
         </div>
@@ -1077,28 +1081,32 @@
             <div class="project-card glass-card">
                 <div>
                     <div class="project-header">
-                        <div class="project-icon">🚀</div>
-                        <h3>AI Chat Portfolio</h3>
+                        <div class="project-icon">
+                            <img src="images/projects-icons/portfolio-icon.jpg" alt="Personal Portfolio">
+                        </div>
+                        <h3>AI-Powered Smart Portfolio</h3>
                     </div>
-                    <p>An interactive portfolio website where visitors can chat with an AI version of me, powered by OpenAI and Azure Speech Services with voice synthesis.</p>
+                    <p>A professional portfolio showcasing my projects and experience, enhanced with an AI persona powered by Gemini, Unlike a generic chatbot, it uses a custom knowledge dataset containing my projects, skills, and background. This setup allow visitors to explore my journey through interactive conversations</p>
                 </div>
                 <div class="project-links">
                     <a href="#" class="project-link">Live Demo</a>
-                    <a href="#" class="project-link">GitHub</a>
+                    <a href="https://github.com/Pritam-Kumar-911/Portfolio-project" target="_blank" class="project-link">GitHub</a>
                 </div>
             </div>
             
             <div class="project-card glass-card">
                 <div>
                     <div class="project-header">
-                        <div class="project-icon">📱</div>
-                        <h3>Modern Web App</h3>
+                        <div class="project-icon">
+                             <img src="images/projects-icons/uni-Ride.ico" alt="Ride Sharing">
+                        </div>
+                        <h3>Uni-Ride – Campus Ride-Sharing System</h3>
                     </div>
-                    <p>A responsive web application built with React and Node.js, featuring real-time data visualization and seamless user experience across all devices.</p>
+                    <p>Developed a Java Swing desktop application that enables university students to offer and book rides. Implemented driver and rider dashboards, registration/login system, and real-time ride booking with seat management. Integrated with SQLite database for persistent data storage.</p>
                 </div>
                 <div class="project-links">
                     <a href="#" class="project-link">Live Demo</a>
-                    <a href="#" class="project-link">GitHub</a>
+                    <a href="https://github.com/Pritam-Kumar-911/Ride-Sharing-Magement-System" target="_blank" class="project-link">GitHub</a>
                 </div>
             </div>
             
