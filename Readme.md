@@ -1,4 +1,4 @@
-# 🚀 AI-Powered Developer Portfolio
+# 🚀 AI-Powered Smart Portfolio
 
 A next-generation developer portfolio that goes beyond static projects and text.
 This site integrates an AI-driven chatbot trained on a curated personal dataset (knowledge.json), enabling interactive conversations about my background, skills, and projects.
